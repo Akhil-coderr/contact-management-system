@@ -13,7 +13,9 @@ router.post('/contacts', async (req, res) => {
         await contact.save();
         res.status(201).json(contact);
     } catch (error) {
-        res.status(400).json({ error: error.message });
+        res.status(error.code === 11000 ? 409 : 400).json({
+    error: error.code === 11000 ? 'Email already exists' : error.message
+});
     }
 });
 
