@@ -1,15 +1,12 @@
 const express = require('express');
 const Contact = require('../models/Contact');
-const crypto = require('crypto');
+
 
 const router = express.Router();
 
 router.post('/contacts', async (req, res) => {
     try {
-        const contact = new Contact({
-    ...req.body,
-    contactId: crypto.randomUUID()
-});
+        const contact = new Contact(req.body);
         await contact.save();
         res.status(201).json(contact);
     } catch (error) {

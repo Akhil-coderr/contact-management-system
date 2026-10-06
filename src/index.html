@@ -1,9 +1,927 @@
-<html>
-    <head>
-        <title></title>
-    </head>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact Management System</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <style>
+        :root {
+            --bg: #f4f5fb;
+            --surface: #ffffff;
+            --text: #14151a;
+            --muted: #6b7280;
+            --border: #e8eaf0;
+            --brand: #4f46e5;
+            --brand-dark: #4338ca;
+            --danger: #e11d48;
+            --radius: 16px;
 
-    <body>
-        <p>Hello World!</p>
-    </body>
+            /* Icons (used as backgrounds / masks) */
+            --ic-id: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%239aa0ae' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cline x1='4' y1='9' x2='20' y2='9'/%3E%3Cline x1='4' y1='15' x2='20' y2='15'/%3E%3Cline x1='10' y1='3' x2='8' y2='21'/%3E%3Cline x1='16' y1='3' x2='14' y2='21'/%3E%3C/svg%3E");
+            --ic-user: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%239aa0ae' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2'/%3E%3Ccircle cx='12' cy='7' r='4'/%3E%3C/svg%3E");
+            --ic-phone: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%239aa0ae' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z'/%3E%3C/svg%3E");
+            --ic-mail: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%239aa0ae' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M4 4h16a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z'/%3E%3Cpolyline points='22,6 12,13 2,6'/%3E%3C/svg%3E");
+            --ic-chev: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%236b7280' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
+            --ic-edit: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z'/%3E%3C/svg%3E");
+            --ic-trash: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='3 6 5 6 21 6'/%3E%3Cpath d='M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6'/%3E%3Cpath d='M10 11v6M14 11v6'/%3E%3C/svg%3E");
+            --ic-plus: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2.6' stroke-linecap='round' stroke-linejoin='round'%3E%3Cline x1='12' y1='5' x2='12' y2='19'/%3E%3Cline x1='5' y1='12' x2='19' y2='12'/%3E%3C/svg%3E");
+        }
+
+        * { box-sizing: border-box; }
+
+        body {
+            font-family: 'Inter', 'Segoe UI', Arial, sans-serif;
+            margin: 0;
+            background:
+                radial-gradient(circle at 100% 0%, rgba(79, 70, 229, 0.06), transparent 40%),
+                var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+        }
+
+        /* ---------- Header ---------- */
+        .topbar {
+            position: relative;
+            overflow: hidden;
+            background:
+                radial-gradient(circle at 15% 20%, rgba(129, 140, 248, 0.45), transparent 45%),
+                radial-gradient(circle at 85% 75%, rgba(236, 72, 153, 0.25), transparent 40%),
+                linear-gradient(135deg, #1e1b4b 0%, #4f46e5 100%);
+            padding: 60px 20px 124px;
+            text-align: center;
+            color: #fff;
+        }
+
+        .topbar::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background-image: radial-gradient(rgba(255, 255, 255, 0.14) 1px, transparent 1px);
+            background-size: 22px 22px;
+            -webkit-mask-image: linear-gradient(to bottom, #000, transparent);
+            mask-image: linear-gradient(to bottom, #000, transparent);
+        }
+
+        .topbar .logo, .topbar h1, .topbar p { position: relative; }
+
+        .logo {
+            width: 62px; height: 62px;
+            margin: 0 auto 18px;
+            border-radius: 18px;
+            display: grid; place-items: center;
+            background: rgba(255, 255, 255, 0.14);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            -webkit-backdrop-filter: blur(6px);
+            backdrop-filter: blur(6px);
+            box-shadow: 0 10px 30px rgba(15, 12, 60, 0.35);
+        }
+
+        .logo svg { width: 30px; height: 30px; }
+
+        .topbar svg {
+            fill: none; stroke: #fff; stroke-width: 2;
+            stroke-linecap: round; stroke-linejoin: round;
+        }
+
+        .topbar h1 { margin: 0 0 10px; font-size: 2.1rem; font-weight: 700; letter-spacing: -0.025em; }
+        .topbar p { margin: 0 auto; max-width: 560px; color: rgba(255, 255, 255, 0.8); font-size: 1rem; line-height: 1.55; }
+
+        /* Floating icons on the edges of the header */
+        .deco {
+            position: absolute;
+            width: 54px; height: 54px;
+            border-radius: 16px;
+            display: grid; place-items: center;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.22);
+            -webkit-backdrop-filter: blur(4px);
+            backdrop-filter: blur(4px);
+            animation: float 6s ease-in-out infinite;
+        }
+
+        .deco svg { width: 24px; height: 24px; opacity: 0.9; }
+        .deco-1 { left: 5%;  top: 40px; }
+        .deco-2 { left: 12%; bottom: 52px; animation-delay: -2s; width: 44px; height: 44px; }
+        .deco-3 { right: 5%; top: 52px; animation-delay: -1s; }
+        .deco-4 { right: 12%; bottom: 46px; animation-delay: -3s; width: 44px; height: 44px; }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0) rotate(-4deg); }
+            50%      { transform: translateY(-10px) rotate(4deg); }
+        }
+
+        .container { max-width: 860px; margin: -76px auto 60px; padding: 0 20px; position: relative; }
+
+        /* ---------- Cards ---------- */
+        .card {
+            position: relative;
+            overflow: hidden;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            box-shadow: 0 18px 44px rgba(30, 27, 75, 0.1);
+            padding: 26px 24px 24px;
+        }
+
+        .card::before {
+            content: '';
+            position: absolute; top: 0; left: 0; right: 0; height: 4px;
+            background: linear-gradient(90deg, #4f46e5, #8b5cf6, #ec4899);
+        }
+
+        .card h3 { display: flex; align-items: center; gap: 10px; margin: 0 0 6px; font-size: 1.1rem; font-weight: 700; }
+        .card .sub { margin: 0 0 20px; color: var(--muted); font-size: 0.88rem; line-height: 1.55; }
+
+        .title-ic {
+            width: 34px; height: 34px; border-radius: 10px;
+            display: grid; place-items: center;
+            background: linear-gradient(135deg, #6366f1, #4338ca);
+            box-shadow: 0 6px 14px rgba(79, 70, 229, 0.32);
+            flex-shrink: 0;
+        }
+
+        .title-ic svg, .h2-ic svg {
+            width: 18px; height: 18px; fill: none; stroke: #fff; stroke-width: 2;
+            stroke-linecap: round; stroke-linejoin: round;
+        }
+
+        /* ---------- Form ---------- */
+        form {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 14px 12px;
+        }
+
+        form .btn-primary { grid-column: 1 / -1; justify-self: end; }
+
+        .field { display: flex; flex-direction: column; gap: 5px; min-width: 0; }
+        .field label { font-size: 0.78rem; font-weight: 600; color: #4b5160; }
+        .field .hint { font-size: 0.74rem; color: #9aa0ae; }
+        .field-error { color: var(--danger); font-size: 0.78rem; font-weight: 500; min-height: 0; }
+        .field-error:empty { display: none; }
+
+        input, select {
+            font-family: inherit;
+            padding: 12px 14px;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            font-size: 0.92rem;
+            background-color: #fbfbfd;
+            color: var(--text);
+            outline: none;
+            width: 100%;
+            transition: border-color 0.2s, box-shadow 0.2s, background-color 0.2s;
+        }
+
+        input::placeholder { color: #a3a9b8; }
+
+        /* Icons inside the inputs */
+        .field input, .swal-form input {
+            padding-left: 42px;
+            background-repeat: no-repeat;
+            background-position: 14px center;
+            background-size: 18px;
+        }
+
+        #contactId, #swal-id { background-image: var(--ic-id); }
+        #name, #swal-name { background-image: var(--ic-user); }
+        #phone, #swal-phone { background-image: var(--ic-phone); }
+        #email, #swal-email { background-image: var(--ic-mail); }
+
+        input:hover, select:hover { border-color: #d6d9e8; }
+
+        input:focus, select:focus {
+            background-color: #fff;
+            border-color: var(--brand);
+            box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.13);
+        }
+
+        input.invalid { border-color: var(--danger); background-color: #fff8f9; }
+        input:disabled { background-color: #f1f2f8; color: var(--muted); cursor: not-allowed; }
+
+        button {
+            font-family: inherit;
+            border: 1px solid transparent;
+            border-radius: 12px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.88rem;
+            padding: 12px 20px;
+            display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+            transition: background 0.2s, transform 0.15s, box-shadow 0.2s, border-color 0.2s;
+        }
+
+        button:active { transform: scale(0.97); }
+        button:focus-visible { outline: 3px solid rgba(79, 70, 229, 0.4); outline-offset: 2px; }
+
+        /* Button icons */
+        .btn-primary::before, .btn-edit::before, .btn-danger::before {
+            content: '';
+            width: 15px; height: 15px;
+            background: currentColor;
+            -webkit-mask-repeat: no-repeat; mask-repeat: no-repeat;
+            -webkit-mask-position: center; mask-position: center;
+            -webkit-mask-size: contain; mask-size: contain;
+        }
+
+        .btn-primary::before { -webkit-mask-image: var(--ic-plus); mask-image: var(--ic-plus); }
+        .btn-edit::before { -webkit-mask-image: var(--ic-edit); mask-image: var(--ic-edit); }
+        .btn-danger::before { -webkit-mask-image: var(--ic-trash); mask-image: var(--ic-trash); }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #6366f1 0%, #4f46e5 55%, #4338ca 100%);
+            color: #fff;
+            padding: 13px 24px;
+            box-shadow: 0 8px 20px rgba(79, 70, 229, 0.35);
+        }
+        .btn-primary:hover { box-shadow: 0 10px 26px rgba(79, 70, 229, 0.45); filter: brightness(1.06); transform: translateY(-1px); }
+        .btn-primary:disabled { opacity: 0.6; cursor: wait; }
+
+        /* Edit = indigo tint, Delete = red tint (destructive) */
+        .btn-edit {
+            background: #eef0ff;
+            color: #4338ca;
+            border-color: #c7cbfa;
+            padding: 8px 16px;
+        }
+        .btn-edit:hover { background: #e0e4ff; border-color: #a5acf5; }
+
+        .btn-danger {
+            background: #fff1f3;
+            color: #be123c;
+            border-color: #fecdd6;
+            padding: 8px 16px;
+        }
+        .btn-danger:hover { background: #ffe0e5; border-color: #fda4b4; }
+
+        /* ---------- Section heading ---------- */
+        .section-intro { margin: 38px 0 16px; }
+        .section-intro h2 { display: flex; align-items: center; gap: 10px; margin: 0 0 5px; font-size: 1.2rem; font-weight: 700; }
+        .section-intro p { margin: 0; color: var(--muted); font-size: 0.88rem; line-height: 1.55; }
+
+        .h2-ic {
+            width: 30px; height: 30px; border-radius: 9px;
+            display: grid; place-items: center;
+            background: linear-gradient(135deg, #8b5cf6, #6366f1);
+            flex-shrink: 0;
+        }
+
+        /* ---------- Toolbar ---------- */
+        .toolbar {
+            display: grid;
+            grid-template-columns: 1fr 230px;
+            gap: 12px;
+            margin: 0 0 14px;
+            padding: 10px;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            box-shadow: 0 6px 18px rgba(30, 27, 75, 0.05);
+        }
+
+        .search-wrap { position: relative; }
+        .search-wrap svg {
+            position: absolute; left: 14px; top: 50%; transform: translateY(-50%);
+            width: 18px; height: 18px; color: var(--muted); pointer-events: none;
+        }
+        .search-wrap input { padding-left: 42px; }
+
+        select {
+            cursor: pointer;
+            -webkit-appearance: none; appearance: none;
+            padding-right: 40px;
+            background-image: var(--ic-chev);
+            background-repeat: no-repeat;
+            background-position: right 14px center;
+            background-size: 16px;
+        }
+
+        .list-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin: 0 0 14px;
+            gap: 12px;
+        }
+
+        .list-header .label { color: var(--muted); font-size: 0.82rem; font-weight: 500; }
+
+        .counts { display: flex; align-items: center; gap: 8px; }
+
+        #count {
+            background: linear-gradient(135deg, #eef0ff, #f3eaff);
+            color: var(--brand);
+            border: 1px solid #dadefc;
+            font-weight: 600;
+            font-size: 0.8rem;
+            padding: 5px 14px;
+            border-radius: 999px;
+            white-space: nowrap;
+        }
+
+        /* ---------- Contact cards ---------- */
+        .contact {
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 16px 18px 16px 22px;
+            margin-bottom: 12px;
+            animation: fadeUp 0.3s ease both;
+            transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
+        }
+
+        .contact::before {
+            content: '';
+            position: absolute; left: 0; top: 0; bottom: 0; width: 4px;
+            background: var(--accent);
+        }
+
+        .contact:hover {
+            transform: translateY(-3px);
+            border-color: #d9dcf5;
+            box-shadow: 0 14px 30px rgba(79, 70, 229, 0.12);
+        }
+
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(8px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+
+        .avatar {
+            width: 48px; height: 48px; border-radius: 14px;
+            background: var(--accent);
+            background: linear-gradient(135deg, var(--accent), color-mix(in srgb, var(--accent), #1e1b4b 38%));
+            color: #fff;
+            font-weight: 700; font-size: 1.1rem;
+            display: flex; align-items: center; justify-content: center;
+            flex-shrink: 0;
+            box-shadow: 0 6px 14px rgba(20, 21, 26, 0.16);
+        }
+
+        .info { flex: 1; min-width: 0; }
+
+        .name-row { display: flex; align-items: center; flex-wrap: wrap; gap: 8px; margin-bottom: 4px; }
+        .info .name { font-weight: 600; font-size: 1.02rem; word-break: break-word; }
+
+        .id-chip {
+            font-size: 0.72rem;
+            font-weight: 600;
+            color: #4338ca;
+            background: #eef0ff;
+            border: 1px solid #dadefc;
+            padding: 2px 9px;
+            border-radius: 999px;
+            word-break: break-all;
+        }
+
+        .info .meta {
+            color: var(--muted);
+            font-size: 0.86rem;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 4px 18px;
+            word-break: break-word;
+        }
+
+        .info .meta span { display: inline-flex; align-items: center; gap: 6px; }
+
+        .info .meta span::before {
+            content: '';
+            width: 14px; height: 14px; flex-shrink: 0;
+            background: currentColor; opacity: 0.65;
+            -webkit-mask-repeat: no-repeat; mask-repeat: no-repeat;
+            -webkit-mask-position: center; mask-position: center;
+            -webkit-mask-size: contain; mask-size: contain;
+        }
+
+        .info .meta span:first-child::before { -webkit-mask-image: var(--ic-phone); mask-image: var(--ic-phone); }
+        .info .meta span:last-child::before { -webkit-mask-image: var(--ic-mail); mask-image: var(--ic-mail); }
+
+        .actions { display: flex; gap: 8px; }
+
+        .empty {
+            text-align: center;
+            color: var(--muted);
+            padding: 44px 20px;
+            background: var(--surface);
+            border: 1px dashed #cfd3e6;
+            border-radius: var(--radius);
+            line-height: 1.6;
+        }
+
+        .empty strong { display: block; color: var(--text); font-size: 1.02rem; margin-bottom: 4px; }
+
+        .footer {
+            text-align: center;
+            color: var(--muted);
+            font-size: 0.8rem;
+            margin-top: 40px;
+            padding-top: 22px;
+            border-top: 1px solid var(--border);
+        }
+
+        /* ---------- Edit / delete dialogs ---------- */
+        .swal-form { text-align: left; }
+        .swal-form label { display: block; font-size: 0.78rem; font-weight: 600; color: #4b5160; margin: 10px 0 5px; }
+        .swal2-popup { font-family: 'Inter', sans-serif !important; border-radius: 20px !important; }
+        .swal2-title { font-weight: 700 !important; letter-spacing: -0.01em; }
+        .swal2-styled { border-radius: 12px !important; font-weight: 600 !important; }
+
+        /* ---------- Responsive ---------- */
+        @media (max-width: 700px) {
+            form { grid-template-columns: 1fr 1fr; }
+            .toolbar { grid-template-columns: 1fr; }
+            .contact { flex-wrap: wrap; }
+            .actions { width: 100%; }
+            .actions button { flex: 1; }
+            .topbar h1 { font-size: 1.65rem; }
+            .deco { display: none; }
+        }
+
+        @media (max-width: 480px) {
+            form { grid-template-columns: 1fr; }
+            form .btn-primary { justify-self: stretch; }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            .contact, .deco { animation: none; }
+            .contact:hover { transform: none; }
+        }
+    </style>
+</head>
+
+<body>
+    <header class="topbar">
+        <span class="deco deco-1"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="2" y="5" width="20" height="14" rx="2"/><circle cx="8" cy="12" r="2"/><path d="M13 10h5M13 14h4"/></svg></span>
+        <span class="deco deco-2"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg></span>
+        <span class="deco deco-3"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 4h16a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z"/><polyline points="22,6 12,13 2,6"/></svg></span>
+        <span class="deco deco-4"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></span>
+        <div class="logo"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></div>
+        <h1>Contact Management System</h1>
+        <p>Add, find and manage every contact in one clean, searchable place.</p>
+    </header>
+
+    <main class="container">
+        <section class="card">
+            <h3><span class="title-ic"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="8.5" cy="7" r="4"/><line x1="20" y1="8" x2="20" y2="14"/><line x1="23" y1="11" x2="17" y2="11"/></svg></span>New contact</h3>
+            <p class="sub">Give each person a unique Contact ID, then add their name, phone number and email to save them to your directory.</p>
+            <form id="contactForm" novalidate>
+                <div class="field">
+                    <label for="contactId">Contact ID</label>
+                    <input type="text" id="contactId" placeholder="e.g. CNT001" maxlength="30" autocomplete="off">
+                    <span class="hint">Must be unique</span>
+                    <div class="field-error" id="err-contactId"></div>
+                </div>
+                <div class="field">
+                    <label for="name">Full name</label>
+                    <input type="text" id="name" placeholder="Full name" autocomplete="off">
+                    <div class="field-error" id="err-name"></div>
+                </div>
+                <div class="field">
+                    <label for="phone">Phone</label>
+                    <input type="text" id="phone" placeholder="10-digit number" inputmode="numeric" maxlength="10" autocomplete="off">
+                    <div class="field-error" id="err-phone"></div>
+                </div>
+                <div class="field">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" placeholder="name@example.com" autocomplete="off">
+                    <div class="field-error" id="err-email"></div>
+                </div>
+                <button type="submit" class="btn-primary" id="addBtn">Add Contact</button>
+            </form>
+        </section>
+
+        <div class="section-intro">
+            <h2><span class="h2-ic"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></span>Your contacts</h2>
+            <p>Search by name, phone, Contact ID or email, and sort the list to find anyone instantly.</p>
+        </div>
+
+        <div class="toolbar">
+            <div class="search-wrap">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                <input type="search" id="search" placeholder="Search by name, phone, Contact ID or email" aria-label="Search contacts" autocomplete="off">
+            </div>
+            <select id="sort" aria-label="Sort contacts">
+                <option value="newest" selected>Most recently added</option>
+                <option value="oldest">Oldest added</option>
+                <option value="az">Name A–Z</option>
+                <option value="za">Name Z–A</option>
+            </select>
+        </div>
+
+        <div class="list-header">
+            <span class="label">Showing your saved contacts</span>
+            <div class="counts" aria-live="polite">
+                <span id="count">0 contacts</span>
+            </div>
+        </div>
+
+        <div id="contacts"></div>
+
+        <div class="footer">Contact Management System &middot; Your people, always organised.</div>
+    </main>
+
+    <script>
+        const container = document.getElementById('contacts');
+        const countEl = document.getElementById('count');
+        const searchEl = document.getElementById('search');
+        const sortEl = document.getElementById('sort');
+        const form = document.getElementById('contactForm');
+        const addBtn = document.getElementById('addBtn');
+        const colors = ['#4f46e5', '#0ea5e9', '#10b981', '#f59e0b', '#ec4899', '#8b5cf6', '#14b8a6', '#ef4444'];
+
+        const CONTACT_ID_REGEX = /^[A-Za-z0-9_-]{1,30}$/;
+        const PHONE_REGEX = /^\d{10}$/;
+        const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[A-Za-z]{2,}$/;
+        const UUID_REGEX = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+        const OBJECT_ID_REGEX = /^[0-9a-f]{24}$/i;
+
+        // Fields the API may use to return the ID the user typed
+        const ID_KEYS = ['contactId', 'contactID', 'contact_id', 'customId', 'custom_id', 'userContactId', 'cid'];
+
+        let contactsData = [];
+
+        // Returns the ID the user entered. Auto-generated IDs (UUID / ObjectId) are never shown.
+        function displayId(contact) {
+            for (const key of ID_KEYS) {
+                const value = contact[key];
+                if (value === undefined || value === null || value === '') continue;
+                const text = String(value).trim();
+                if (text && !UUID_REGEX.test(text) && !OBJECT_ID_REGEX.test(text)) return text;
+            }
+            return '';
+        }
+
+        // Checks Contact ID and email (case-insensitive) against saved contacts.
+        // `exclude` is the contact being edited, so it never clashes with itself.
+        function duplicateErrors({ contactId, email, phone }, exclude = null) {
+            const errors = {};
+            const others = contactsData.filter((c) => c !== exclude);
+            const id = String(contactId || '').trim().toLowerCase();
+            const mail = String(email || '').trim().toLowerCase();
+            const digits = String(phone || '').replace(/\D/g, '');
+
+            if (digits && others.some((c) => String(c.phone ?? '').replace(/\D/g, '') === digits)) {
+                errors.phone = 'Phone number already exists';
+            }
+
+            if (id && others.some((c) => [displayId(c), c.contactId]
+                .some((v) => String(v ?? '').trim().toLowerCase() === id))) {
+                errors.contactId = 'Contact ID already exists';
+            }
+            if (mail && others.some((c) => String(c.email ?? '').trim().toLowerCase() === mail)) {
+                errors.email = 'Email already exists';
+            }
+            return errors;
+        }
+
+        const Toast = Swal.mixin({
+            toast: true,
+            position: 'top-end',
+            showConfirmButton: false,
+            timer: 3000,
+            timerProgressBar: true,
+            didOpen: (toast) => {
+                toast.addEventListener('mouseenter', Swal.stopTimer);
+                toast.addEventListener('mouseleave', Swal.resumeTimer);
+            }
+        });
+
+        function notify(text, icon = 'success') {
+            Toast.fire({ icon, title: text });
+        }
+
+        function escapeHtml(value) {
+            const div = document.createElement('div');
+            div.textContent = value ?? '';
+            return div.innerHTML;
+        }
+
+        function colorFor(text) {
+            let hash = 0;
+            for (const ch of String(text)) hash = (hash * 31 + ch.charCodeAt(0)) >>> 0;
+            return colors[hash % colors.length];
+        }
+
+        async function readJson(response) {
+            try { return await response.json(); } catch { return {}; }
+        }
+
+        // ---------- Validation (mirrors the backend rules) ----------
+        function validateFields({ contactId, name, phone, email }, { checkId = true } = {}) {
+            const errors = {};
+            if (checkId) {
+                if (!contactId) errors.contactId = 'Contact ID is required';
+                else if (!CONTACT_ID_REGEX.test(contactId)) errors.contactId = 'Use letters, numbers, - or _ (max 30)';
+            }
+            if (!name) errors.name = 'Name is required';
+            if (!phone) errors.phone = 'Phone is required';
+            else if (!PHONE_REGEX.test(phone)) errors.phone = 'Phone must be exactly 10 digits';
+            if (!email) errors.email = 'Email is required';
+            else if (!EMAIL_REGEX.test(email)) errors.email = 'Enter a valid email address';
+            return errors;
+        }
+
+        function showErrors(errors) {
+            ['contactId', 'name', 'phone', 'email'].forEach((field) => {
+                document.getElementById('err-' + field).textContent = errors[field] || '';
+                document.getElementById(field).classList.toggle('invalid', Boolean(errors[field]));
+            });
+        }
+
+        // Map a server error message back to the field it belongs to
+        function fieldForServerError(message = '') {
+            const m = message.toLowerCase();
+            if (m.includes('contact id')) return 'contactId';
+            if (m.includes('email')) return 'email';
+            if (m.includes('phone')) return 'phone';
+            if (m.includes('name')) return 'name';
+            return null;
+        }
+
+        ['contactId', 'name', 'phone', 'email'].forEach((field) => {
+            document.getElementById(field).addEventListener('input', () => {
+                let message = '';
+                if (field === 'contactId' || field === 'email' || field === 'phone') {
+                    message = duplicateErrors({
+                        contactId: document.getElementById('contactId').value,
+                        email: document.getElementById('email').value,
+                        phone: document.getElementById('phone').value
+                    })[field] || '';
+                }
+                document.getElementById('err-' + field).textContent = message;
+                document.getElementById(field).classList.toggle('invalid', Boolean(message));
+            });
+        });
+
+        // Digits only for phone
+        document.getElementById('phone').addEventListener('input', (e) => {
+            e.target.value = e.target.value.replace(/\D/g, '').slice(0, 10);
+        });
+
+        // ---------- Add contact ----------
+        form.addEventListener('submit', async (event) => {
+            event.preventDefault();
+
+            const contact = {
+                contactId: document.getElementById('contactId').value.trim(),
+                name: document.getElementById('name').value.trim(),
+                phone: document.getElementById('phone').value.trim(),
+                email: document.getElementById('email').value.trim()
+            };
+
+            contact.email = contact.email.toLowerCase();
+
+            // Format errors take priority; then duplicate Contact ID / email
+            const errors = { ...duplicateErrors(contact), ...validateFields(contact) };
+            showErrors(errors);
+            if (Object.keys(errors).length) return;
+
+            addBtn.disabled = true;
+            try {
+                const response = await fetch('./contacts', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(contact)
+                });
+                const data = await readJson(response);
+
+                if (!response.ok) {
+                    const message = data.error || 'Could not add contact';
+                    const field = fieldForServerError(message);
+                    if (field) showErrors({ [field]: message });
+                    notify(message, 'error');
+                    return;
+                }
+
+                notify('Contact added successfully');
+                form.reset();
+                showErrors({});
+                await loadContacts();
+            } catch {
+                notify('Network error. Please try again.', 'error');
+            } finally {
+                addBtn.disabled = false;
+            }
+        });
+
+        // ---------- Search + sort ----------
+        // ObjectId's first 4 bytes are a timestamp: fallback for documents without createdAt
+        function addedTime(contact) {
+            if (contact.createdAt) return new Date(contact.createdAt).getTime();
+            if (contact._id) return parseInt(String(contact._id).substring(0, 8), 16) * 1000;
+            return 0;
+        }
+
+        function getVisibleContacts() {
+            const query = searchEl.value.trim().toLowerCase();
+
+            let list = contactsData.filter((c) => {
+                if (!query) return true;
+                return [displayId(c), c.name, c.phone, c.email]
+                    .some((value) => String(value ?? '').toLowerCase().includes(query));
+            });
+
+            const byName = (a, b) => String(a.name).localeCompare(String(b.name), undefined, { sensitivity: 'base' });
+
+            switch (sortEl.value) {
+                case 'az': list.sort(byName); break;
+                case 'za': list.sort((a, b) => byName(b, a)); break;
+                case 'oldest': list.sort((a, b) => addedTime(a) - addedTime(b)); break;
+                case 'newest':
+                default: list.sort((a, b) => addedTime(b) - addedTime(a)); break;
+            }
+            return list;
+        }
+
+        function updateCount(visible) {
+            const total = contactsData.length;
+            const noun = total === 1 ? 'contact' : 'contacts';
+            countEl.textContent = (searchEl.value.trim() && visible !== total)
+                ? `${visible} of ${total} ${noun}`
+                : `${total} ${noun}`;
+        }
+
+        function renderContacts() {
+            const visible = getVisibleContacts();
+            updateCount(visible.length);
+
+            if (contactsData.length === 0) {
+                container.innerHTML = '<div class="empty"><strong>No contacts yet</strong>Add your first contact using the form above to get started.</div>';
+                return;
+            }
+
+            if (visible.length === 0) {
+                container.innerHTML = '<div class="empty"><strong>No contacts found</strong>Try a different name, phone number, Contact ID or email.</div>';
+                return;
+            }
+
+            container.innerHTML = visible.map((contact, index) => {
+                const initial = escapeHtml((contact.name || '?').trim().charAt(0).toUpperCase());
+                const id = escapeHtml(contact.contactId);
+                const shownId = displayId(contact);
+                const chip = shownId ? `<span class="id-chip" title="Contact ID">ID: ${escapeHtml(shownId)}</span>` : '';
+                return `
+                <div class="contact" style="--accent:${colorFor(contact.name)}; animation-delay:${Math.min(index, 10) * 0.03}s">
+                    <div class="avatar">${initial}</div>
+                    <div class="info">
+                        <div class="name-row">
+                            <span class="name">${escapeHtml(contact.name)}</span>
+                            ${chip}
+                        </div>
+                        <div class="meta">
+                            <span>${escapeHtml(contact.phone)}</span>
+                            <span>${escapeHtml(contact.email)}</span>
+                        </div>
+                    </div>
+                    <div class="actions">
+                        <button class="btn-edit" data-action="edit" data-id="${id}">Edit</button>
+                        <button class="btn-danger" data-action="delete" data-id="${id}">Delete</button>
+                    </div>
+                </div>`;
+            }).join('');
+        }
+
+        searchEl.addEventListener('input', renderContacts);
+        sortEl.addEventListener('change', renderContacts);
+
+        // ---------- Load / delete / edit ----------
+        async function loadContacts() {
+            try {
+                const response = await fetch('./contacts');
+                if (!response.ok) throw new Error('Request failed');
+                contactsData = await response.json();
+                renderContacts();
+            } catch {
+                notify('Could not load contacts', 'error');
+            }
+        }
+
+        async function deleteContact(contactId) {
+            const result = await Swal.fire({
+                title: 'Delete this contact?',
+                text: 'This cannot be undone.',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Yes, delete',
+                confirmButtonColor: '#e11d48',
+                cancelButtonColor: '#6b7280'
+            });
+
+            if (!result.isConfirmed) return;
+
+            try {
+                const response = await fetch(`./contacts/${encodeURIComponent(contactId)}`, { method: 'DELETE' });
+                const data = await readJson(response);
+
+                if (!response.ok) {
+                    notify(data.error || 'Could not delete contact', 'error');
+                    return;
+                }
+
+                notify(data.message || 'Contact deleted', 'success');
+                await loadContacts();
+            } catch {
+                notify('Network error. Please try again.', 'error');
+            }
+        }
+
+        async function editContact(contactId) {
+            const contact = contactsData.find(c => String(c.contactId) === String(contactId));
+            if (!contact) return;
+
+            const current = displayId(contact);
+
+            const result = await Swal.fire({
+                title: 'Edit contact',
+                html: `
+                    <div class="swal-form">
+                        <label for="swal-id">Contact ID</label>
+                        <input id="swal-id" placeholder="e.g. CNT001" maxlength="30" autocomplete="off" value="${escapeHtml(current)}">
+                        <label for="swal-name">Name</label>
+                        <input id="swal-name" placeholder="Name" value="${escapeHtml(contact.name)}">
+                        <label for="swal-phone">Phone</label>
+                        <input id="swal-phone" placeholder="10-digit number" inputmode="numeric" maxlength="10" value="${escapeHtml(contact.phone)}">
+                        <label for="swal-email">Email</label>
+                        <input id="swal-email" type="email" placeholder="Email" value="${escapeHtml(contact.email)}">
+                    </div>`,
+                focusConfirm: false,
+                showCancelButton: true,
+                confirmButtonText: 'Save changes',
+                confirmButtonColor: '#4f46e5',
+                cancelButtonColor: '#6b7280',
+                preConfirm: () => {
+                    const typedId = document.getElementById('swal-id').value.trim();
+                    const values = {
+                        name: document.getElementById('swal-name').value.trim(),
+                        phone: document.getElementById('swal-phone').value.trim(),
+                        email: document.getElementById('swal-email').value.trim()
+                    };
+
+                    values.email = values.email.toLowerCase();
+                    const idChanged = typedId && typedId !== current;
+                    const errors = {
+                        ...duplicateErrors({ contactId: idChanged ? typedId : '', email: values.email, phone: values.phone }, contact),
+                        ...validateFields(values, { checkId: false })
+                    };
+                    if (!typedId && current) errors.contactId = 'Contact ID cannot be empty';
+                    else if (typedId && typedId !== current && !CONTACT_ID_REGEX.test(typedId)) {
+                        errors.contactId = 'Contact ID: use letters, numbers, - or _ (max 30)';
+                    }
+
+                    const first = errors.contactId || Object.values(errors)[0];
+                    if (first) {
+                        Swal.showValidationMessage(first);
+                        return false;
+                    }
+
+                    // Only send a new ID if the user actually changed it
+                    const changed = typedId && typedId !== current;
+                    return { contactId: changed ? typedId : String(contact.contactId), ...values };
+                }
+            });
+
+            if (!result.isConfirmed) return;
+
+            try {
+                // URL uses the current ID; body carries the (possibly new) ID
+                const response = await fetch(`./contacts/${encodeURIComponent(contactId)}`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(result.value)
+                });
+                const data = await readJson(response);
+
+                if (!response.ok) {
+                    notify(data.error || 'Could not update contact', 'error');
+                    return;
+                }
+
+                notify('Contact updated successfully');
+                await loadContacts();
+            } catch {
+                notify('Network error. Please try again.', 'error');
+            }
+        }
+
+        container.addEventListener('click', (event) => {
+            const button = event.target.closest('button[data-action]');
+            if (!button) return;
+
+            const { action, id } = button.dataset;
+            if (action === 'edit') editContact(id);
+            if (action === 'delete') deleteContact(id);
+        });
+
+        loadContacts();
+    </script>
+</body>
 </html>
